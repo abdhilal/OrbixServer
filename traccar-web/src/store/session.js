@@ -37,7 +37,12 @@ const { reducer, actions } = createSlice({
       const liveRoutes = state.user.attributes.mapLiveRoutes || state.server.attributes.mapLiveRoutes || 'none';
       const liveRoutesLimit = state.user.attributes['web.liveRouteLength'] || state.server.attributes['web.liveRouteLength'] || 10;
       action.payload.forEach((position) => {
-        state.positions[position.deviceId] = position;
+        // إضافة lastUpdateTimestamp للموقع
+        const positionWithTimestamp = {
+          ...position,
+          lastUpdateTimestamp: Date.now()
+        };
+        state.positions[position.deviceId] = positionWithTimestamp;
         if (liveRoutes !== 'none') {
           const route = state.history[position.deviceId] || [];
           const last = route.at(-1);

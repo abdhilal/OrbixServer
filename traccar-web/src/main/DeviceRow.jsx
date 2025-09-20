@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { makeStyles } from 'tss-react/mui';
 import {
   IconButton, Tooltip, Avatar, ListItemAvatar, ListItemText, ListItemButton,
@@ -67,17 +68,39 @@ const DeviceRow = ({ devices, index, style }) => {
   const devicePrimary = useAttributePreference('devicePrimary', 'name');
   const deviceSecondary = useAttributePreference('deviceSecondary', '');
 
+  const [online, setOnline] = useState(item.status === 'online');
+
+  useEffect(() => {
+    if (!position) return;
+
+    const updateStatus = () => {
+      const now = Date.now();
+      const last = position.lastUpdateTimestamp || 0;
+
+      if (now - last > 30_000) { // 30 ثانية
+        setOnline(false);
+      } else {
+        setOnline(true);
+      }
+    };
+
+    updateStatus(); // تحقق فورًا عند التغيير
+
+    const interval = setInterval(updateStatus, 1000); // تحقق كل ثانية
+    return () => clearInterval(interval);
+  }, [position]);
+
   const secondaryText = () => {
     let status;
-    if (item.status === 'online' || !item.lastUpdate) {
-      status = formatStatus(item.status, t);
+    if (online || !item.lastUpdate) {
+      status = formatStatus('online', t);
     } else {
       status = dayjs(item.lastUpdate).fromNow();
     }
     return (
       <>
         {deviceSecondary && item[deviceSecondary] && `${item[deviceSecondary]} • `}
-        <span className={classes[getStatusColor(item.status)]}>{status}</span>
+        <span className={classes[getStatusColor(online ? 'online' : 'offline')]}>{status}</span>
       </>
     );
   };

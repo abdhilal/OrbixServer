@@ -26,14 +26,16 @@ import PublishIcon from '@mui/icons-material/Publish';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PendingIcon from '@mui/icons-material/Pending';
+import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 
 import { useTranslation } from './LocalizationProvider';
 import RemoveDialog from './RemoveDialog';
 import PositionValue from './PositionValue';
 import { useDeviceReadonly, useRestriction } from '../util/permissions';
 import usePositionAttributes from '../attributes/usePositionAttributes';
-import { devicesActions } from '../../store';
+import { devicesActions, sessionActions } from '../../store';
 import { useCatch, useCatchCallback } from '../../reactHelper';
+import { useCallback } from 'react';
 import { useAttributePreference } from '../util/preferences';
 import fetchOrThrow from '../util/fetchOrThrow';
 
@@ -128,6 +130,8 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const shareDisabled = useSelector((state) => state.session.server.attributes.disableShare);
   const user = useSelector((state) => state.session.user);
   const device = useSelector((state) => state.devices.items[deviceId]);
+  const trackingDeviceId = useSelector((state) => state.session.trackingDeviceId);
+  const trackingDevices = useSelector((state) => state.session.trackingDevices || []);
 
   const deviceImage = device?.attributes?.deviceImage;
 
@@ -140,6 +144,8 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const [anchorEl, setAnchorEl] = useState(null);
 
   const [removing, setRemoving] = useState(false);
+  
+  const isTracking = trackingDeviceId === deviceId || trackingDevices.includes(deviceId);
 
   const handleRemove = useCatch(async (removed) => {
     if (removed) {
@@ -167,6 +173,31 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
     });
     navigate(`/settings/geofence/${item.id}`);
   }, [navigate, position]);
+
+  const handleTracking = useCallback(() => {
+    if (trackingDevices.includes(deviceId)) {
+      // إيقاف التتبع للجهاز الحالي
+      dispatch(sessionActions.removeTrackingDevice(deviceId));
+    } else {
+      // بدء التتبع للجهاز الحالي
+      dispatch(sessionActions.addTrackingDevice(deviceId));
+      
+      // إضافة الموقع الحالي كنقطة بداية
+      if (position) {
+        dispatch(sessionActions.updateTrackingPath({
+          deviceId,
+          point: [position.longitude, position.latitude]
+        }));
+      }
+    }
+    
+    // دعم النظام القديم للتوافق
+    if (trackingDeviceId === deviceId) {
+      dispatch(sessionActions.updateTrackingDevice(null));
+    } else if (!trackingDevices.includes(deviceId)) {
+      dispatch(sessionActions.updateTrackingDevice(deviceId));
+    }
+  }, [dispatch, deviceId, trackingDevices, trackingDeviceId, position]);
 
   return (
     <>
@@ -245,6 +276,15 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     disabled={!position}
                   >
                     <PendingIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={isTracking ? 'إيقاف التتبع' : 'تتبع'}>
+                  <IconButton
+                    color={isTracking ? "error" : "primary"}
+                    onClick={handleTracking}
+                    disabled={disableActions || !position}
+                  >
+                    <TrackChangesIcon />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={t('reportReplay')}>

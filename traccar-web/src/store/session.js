@@ -10,6 +10,9 @@ const { reducer, actions } = createSlice({
     logs: [],
     positions: {},
     history: {},
+    trackingDeviceId: null, // للتوافق مع الكود القديم
+    trackingDevices: [], // قائمة الأجهزة المتتبعة
+    trackingPaths: {}, // مسارات التتبع لكل جهاز
   },
   reducers: {
     updateServer(state, action) {
@@ -45,6 +48,38 @@ const { reducer, actions } = createSlice({
           state.history = {};
         }
       });
+    },
+    updateTrackingDevice(state, action) {
+      state.trackingDeviceId = action.payload;
+    },
+    addTrackingDevice(state, action) {
+      const deviceId = action.payload;
+      if (!state.trackingDevices.includes(deviceId)) {
+        state.trackingDevices.push(deviceId);
+        state.trackingPaths[deviceId] = {
+          startTime: new Date().toISOString(),
+          points: [],
+        };
+      }
+    },
+    removeTrackingDevice(state, action) {
+      const deviceId = action.payload;
+      state.trackingDevices = state.trackingDevices.filter(id => id !== deviceId);
+      delete state.trackingPaths[deviceId];
+    },
+    updateTrackingPath(state, action) {
+      const { deviceId, point } = action.payload;
+      if (state.trackingPaths[deviceId]) {
+        const lastPoint = state.trackingPaths[deviceId].points.at(-1);
+        if (!lastPoint || lastPoint[0] !== point[0] || lastPoint[1] !== point[1]) {
+          state.trackingPaths[deviceId].points.push(point);
+        }
+      }
+    },
+    clearAllTracking(state) {
+      state.trackingDevices = [];
+      state.trackingPaths = {};
+      state.trackingDeviceId = null;
     },
   },
 });

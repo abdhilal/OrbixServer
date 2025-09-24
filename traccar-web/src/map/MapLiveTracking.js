@@ -50,8 +50,11 @@ const MapLiveTracking = () => {
   useEffect(() => {
     if (!map) return;
 
+    const mapStyle = map.getStyle();
+    if (!mapStyle) return; // التحقق من وجود النمط قبل الوصول إليه
+
     // إزالة جميع المسارات القديمة
-    const existingLayers = map.getStyle().layers.filter(layer => 
+    const existingLayers = mapStyle.layers.filter(layer => 
       layer.id.startsWith('tracking-route-')
     );
     existingLayers.forEach(layer => {
@@ -60,7 +63,7 @@ const MapLiveTracking = () => {
       }
     });
 
-    const existingSources = Object.keys(map.getStyle().sources).filter(source => 
+    const existingSources = Object.keys(mapStyle.sources).filter(source => 
       source.startsWith('tracking-route-')
     );
     existingSources.forEach(source => {
@@ -175,7 +178,10 @@ const MapLiveTracking = () => {
 
     // تنظيف عند إلغاء التتبع
     return () => {
-      const layersToRemove = map.getStyle().layers.filter(layer => 
+      const mapStyle = map.getStyle();
+      if (!mapStyle) return; // التحقق من وجود النمط قبل الوصول إليه
+      
+      const layersToRemove = mapStyle.layers.filter(layer => 
         layer.id.startsWith('tracking-route-')
       );
       layersToRemove.forEach(layer => {
@@ -184,7 +190,7 @@ const MapLiveTracking = () => {
         }
       });
 
-      const sourcesToRemove = Object.keys(map.getStyle().sources).filter(source => 
+      const sourcesToRemove = Object.keys(mapStyle.sources).filter(source => 
         source.startsWith('tracking-route-')
       );
       sourcesToRemove.forEach(source => {

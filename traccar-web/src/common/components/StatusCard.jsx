@@ -1,24 +1,22 @@
-import { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { Rnd } from 'react-rnd';
 import {
   Card,
   CardContent,
-  Typography,
   CardActions,
+  Typography,
+  CardMedia,
   IconButton,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
   Menu,
   MenuItem,
-  CardMedia,
-  TableFooter,
-  Link,
+  CardHeader,
   Tooltip,
   Button,
+  Link,
+  TableRow,
+  TableCell,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import CloseIcon from '@mui/icons-material/Close';
@@ -36,25 +34,30 @@ import { useDeviceReadonly, useRestriction } from '../util/permissions';
 import usePositionAttributes from '../attributes/usePositionAttributes';
 import { devicesActions, sessionActions } from '../../store';
 import { useCatch, useCatchCallback } from '../../reactHelper';
-import { useCallback } from 'react';
 import { useAttributePreference } from '../util/preferences';
 import fetchOrThrow from '../util/fetchOrThrow';
 
 const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   card: {
     pointerEvents: 'auto',
-    width: theme.dimensions.popupMaxWidth,
-    borderRadius: '16px',
+    width: '100%',
+    minWidth: 450,
+    maxWidth: 500,
+    height: 140,
+    borderRadius: '12px',
     backgroundColor: '#383D4C',
     border: '1px solid rgba(255, 255, 255, 0.1)',
     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
   },
   media: {
-    height: theme.dimensions.popupImageHeight,
+    height: 60,
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
-    borderRadius: '16px 16px 0 0',
+    borderRadius: '12px 12px 0 0',
   },
   mediaButton: {
     color: theme.palette.primary.contrastText,
@@ -64,86 +67,150 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: theme.spacing(1, 1, 0, 2),
+    padding: theme.spacing(0.5, 1.5),
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+    minHeight: '40px',
+    maxHeight: '40px',
+  },
+  headerContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    flex: 1,
+    gap: theme.spacing(0.1),
+  },
+  deviceNameText: {
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    fontSize: '0.9rem',
+    lineHeight: 1.1,
+  },
+  totalDistanceText: {
+    color: '#A9B4C2',
+    fontSize: '0.7rem',
+    lineHeight: 1,
+  },
+  totalDistanceInline: {
+    color: '#A9B4C2',
+    fontSize: '0.8rem',
+    fontWeight: 400,
   },
   content: {
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-    maxHeight: theme.dimensions.cardContentMaxHeight,
-    overflow: 'auto',
+    padding: theme.spacing(0.8, 1.5),
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: 0,
   },
-  icon: {
-    width: '25px',
-    height: '25px',
-    filter: 'brightness(0) invert(1)',
+  mainContainer: {
+    display: 'flex',
+    gap: theme.spacing(1),
+    height: '100%',
+    alignItems: 'stretch',
+    minHeight: 0,
   },
-  table: {
-    '& .MuiTableCell-sizeSmall': {
-      paddingLeft: 0,
-      paddingRight: 0,
-    },
-    '& .MuiTableCell-sizeSmall:first-of-type': {
-      paddingRight: theme.spacing(1),
-    },
+  contentGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gridTemplateRows: 'auto auto',
+    gap: theme.spacing(0.5),
+    flex: 1,
+    alignContent: 'start',
   },
-  cell: {
-    borderBottom: 'none',
-  },
-  actions: {
-    justifyContent: 'space-between',
-    padding: theme.spacing(1, 2),
+  infoItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.2),
+    padding: theme.spacing(0.4, 0.6),
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: '0 0 16px 16px',
+    borderRadius: '4px',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    minHeight: 0,
+  },
+  infoLabel: {
+    fontSize: '0.6rem',
+    color: '#A9B4C2',
+    fontWeight: 500,
+    textTransform: 'uppercase',
+    letterSpacing: '0.3px',
+    lineHeight: 1,
+  },
+  infoValue: {
+    fontSize: '0.75rem',
+    color: '#FFFFFF',
+    fontWeight: 400,
+    wordBreak: 'break-word',
+    lineHeight: 1.1,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  },
+  addressItem: {
+    gridColumn: '1 / -1',
+  },
+  addressValue: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    maxWidth: '100%',
+    
+    
+  },
+  buttonsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(0.3),
+    minWidth: '36px',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: theme.spacing(0.2),
   },
   actionButton: {
-    borderRadius: '50%',
-    width: '40px',
-    height: '40px',
-    padding: theme.spacing(0.5),
-    backgroundColor: 'transparent',
+    width: '28px',
+    height: '28px',
+    padding: theme.spacing(0.3),
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     color: '#A9B4C2',
+    borderRadius: '4px',
     transition: 'all 0.2s ease',
     '&:hover': {
-      backgroundColor: '#4F566B',
+      backgroundColor: 'rgba(255, 255, 255, 0.2)',
       color: '#FFFFFF',
-      transform: 'translateY(-1px)',
+      transform: 'scale(1.05)',
+    },
+    '&:disabled': {
+      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+      color: 'rgba(169, 180, 194, 0.5)',
     },
   },
   primaryButton: {
-    backgroundColor: '#3A86FF',
-    color: '#FFFFFF',
-    '&:hover': {
-      backgroundColor: '#2563EB',
-    },
-  },
-  solidButton: {
-    backgroundColor: '#3A86FF',
-    color: '#FFFFFF',
-    padding: theme.spacing(1, 2),
-    borderRadius: '8px',
-    fontWeight: 500,
-    '&:hover': {
-      backgroundColor: '#2563EB',
-    },
-  },
-  outlineButton: {
-    border: '1px solid #3A86FF',
     color: '#3A86FF',
-    backgroundColor: 'transparent',
-    padding: theme.spacing(1, 2),
-    borderRadius: '8px',
-    fontWeight: 500,
+    backgroundColor: 'rgba(58, 134, 255, 0.2)',
     '&:hover': {
-      backgroundColor: 'rgba(58, 134, 255, 0.1)',
+      backgroundColor: 'rgba(58, 134, 255, 0.3)',
+      color: '#FFFFFF',
     },
   },
-  detailsLink: {
-    color: '#3A86FF',
-    textDecoration: 'none',
-    fontWeight: 500,
+  activeTrackingButton: {
+    color: '#10B981',
+    backgroundColor: 'rgba(16, 185, 129, 0.2)',
     '&:hover': {
-      color: '#2563EB',
-      textDecoration: 'underline',
+      backgroundColor: 'rgba(16, 185, 129, 0.3)',
+      color: '#FFFFFF',
+    },
+  },
+  dangerButton: {
+    '&:hover': {
+      backgroundColor: 'rgba(239, 68, 68, 0.2)',
+      color: '#EF4444',
+    },
+  },
+  closeButton: {
+    color: '#FFFFFF',
+    width: '28px',
+    height: '28px',
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
     },
   },
   root: {
@@ -160,6 +227,9 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
       bottom: `calc(${theme.spacing(3)} + ${theme.dimensions.bottomBarHeight}px)`,
     },
     transform: 'translateX(-50%)',
+  },
+  cell: {
+    borderBottom: 'none',
   },
 }));
 
@@ -202,7 +272,6 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const navigationAppTitle = useAttributePreference('navigationAppTitle');
 
   const [anchorEl, setAnchorEl] = useState(null);
-
   const [removing, setRemoving] = useState(false);
   
   const isTracking = trackingDeviceId === deviceId || trackingDevices.includes(deviceId);
@@ -236,13 +305,10 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
 
   const handleTracking = useCallback(() => {
     if (trackingDevices.includes(deviceId)) {
-      // إيقاف التتبع للجهاز الحالي
       dispatch(sessionActions.removeTrackingDevice(deviceId));
     } else {
-      // بدء التتبع للجهاز الحالي
       dispatch(sessionActions.addTrackingDevice(deviceId));
       
-      // إضافة الموقع الحالي كنقطة بداية
       if (position) {
         dispatch(sessionActions.updateTrackingPath({
           deviceId,
@@ -251,7 +317,6 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
       }
     }
     
-    // دعم النظام القديم للتوافق
     if (trackingDeviceId === deviceId) {
       dispatch(sessionActions.updateTrackingDevice(null));
     } else if (!trackingDevices.includes(deviceId)) {
@@ -285,117 +350,93 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </CardMedia>
               ) : (
                 <div className={`${classes.header} draggable-header`}>
-                  <Typography variant="h6" sx={{ color: '#FFFFFF', fontWeight: 600 }}>
-                    تفاصيل الجهاز: <span style={{ fontWeight: 700, color: '#3A86FF' }}>{device.name}</span>
-                  </Typography>
+                  <div className={classes.headerContent}>
+                    <Typography variant="h6" className={classes.deviceNameText}>
+                      اسم الجهاز: {device.name}
+                      {position?.attributes?.totalDistance && (
+                        <span className={classes.totalDistanceInline}>
+                          {' - '}المسافة الاجمالية: <PositionValue position={position} attribute="totalDistance" />
+                        </span>
+                      )}
+                    </Typography>
+                  </div>
                   <IconButton
                     size="small"
                     onClick={onClose}
                     onTouchStart={onClose}
-                    sx={{ color: '#FFFFFF' }}
+                    className={classes.closeButton}
                   >
+                    
                     <CloseIcon fontSize="small" />
                   </IconButton>
                 </div>
               )}
+              
               {position && (
-                <CardContent className={classes.content}>
-                  <Table size="small" classes={{ root: classes.table }}>
-                    <TableBody>
-                      {positionItems.split(',').filter((key) => position.hasOwnProperty(key) || position.attributes.hasOwnProperty(key)).map((key) => (
-                        <StatusRow
-                          key={key}
-                          name={positionAttributes[key]?.name || key}
-                          content={(
-                            <PositionValue
-                              position={position}
-                              property={position.hasOwnProperty(key) ? key : null}
-                              attribute={position.hasOwnProperty(key) ? null : key}
-                            />
-                          )}
-                        />
-                      ))}
+                 <CardContent className={classes.content}>
+                   <div className={classes.mainContainer}>
+                     {/* شبكة المعلومات */}
+                     <div className={classes.contentGrid}>
+                       <div className={classes.infoItem}>
+                         <Typography variant="body2" className={classes.infoLabel}>
+                           الوقت
+                         </Typography>
+                         <Typography variant="body2" className={classes.infoValue}>
+                           <PositionValue position={position} property="fixTime" />
+                         </Typography>
+                       </div>
+                       
+                       <div className={classes.infoItem}>
+                         <Typography variant="body2" className={classes.infoLabel}>
+                           السرعة
+                         </Typography>
+                         <Typography variant="body2" className={classes.infoValue}>
+                           <PositionValue position={position} property="speed" />
+                         </Typography>
+                       </div>
+                       
+                       <div className={`${classes.infoItem} ${classes.addressItem}`}>
+                         <Typography variant="body2" className={classes.infoLabel}>
+                           العنوان
+                         </Typography>
+                         <Typography variant="body2" className={`${classes.infoValue} ${classes.addressValue}`}>
+                           <PositionValue position={position} property="address" />
+                         </Typography>
+                       </div>
+                     </div>
 
-                    </TableBody>
-                    <TableFooter>
-                      <TableRow>
-                        <TableCell colSpan={2} className={classes.cell}>
-                          <Button
-                            component={RouterLink}
-                            to={`/position/${position.id}`}
-                            className={classes.outlineButton}
-                            variant="outlined"
-                            size="small"
-                          >
-                            {t('sharedShowDetails')}
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    </TableFooter>
-                  </Table>
-                </CardContent>
-              )}
-              <CardActions classes={{ root: classes.actions }} disableSpacing>
-                <Tooltip title={t('sharedExtra')}>
-                  <IconButton
-                    className={classes.actionButton}
-                    onClick={(e) => setAnchorEl(e.currentTarget)}
-                    disabled={!position}
-                  >
-                    <PendingIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={isTracking ? 'إيقاف التتبع' : 'تتبع'}>
-                  <IconButton
-                    className={`${classes.actionButton} ${isTracking ? '' : classes.primaryButton}`}
-                    onClick={handleTracking}
-                    disabled={disableActions || !position}
-                  >
-                    <TrackChangesIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={t('reportReplay')}>
-                  <IconButton
-                    className={classes.actionButton}
-                    onClick={() => navigate(`/replay?deviceId=${deviceId}`)}
-                    disabled={disableActions || !position}
-                  >
-                    <ReplayIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={t('commandTitle')}>
-                  <IconButton
-                    className={classes.actionButton}
-                    onClick={() => navigate(`/settings/device/${deviceId}/command`)}
-                    disabled={disableActions}
-                  >
-                    <PublishIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={t('sharedEdit')}>
-                  <IconButton
-                    className={classes.actionButton}
-                    onClick={() => navigate(`/settings/device/${deviceId}`)}
-                    disabled={disableActions || deviceReadonly}
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title={t('sharedRemove')}>
-                  <IconButton
-                    className={classes.actionButton}
-                    onClick={() => setRemoving(true)}
-                    disabled={disableActions || deviceReadonly}
-                    sx={{ '&:hover': { backgroundColor: 'rgba(239, 68, 68, 0.2)' } }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
-              </CardActions>
+                     {/* الأزرار العمودية */}
+                     <div className={classes.buttonsContainer}>
+                       <Tooltip title={t('sharedExtra')}>
+                         <IconButton
+                           className={classes.actionButton}
+                           onClick={(e) => setAnchorEl(e.currentTarget)}
+                           disabled={!position}
+                         >
+                           <PendingIcon fontSize="small" />
+                         </IconButton>
+                       </Tooltip>
+                       
+                   
+                       
+                       <Tooltip title={t('reportReplay')}>
+                         <IconButton
+                           className={`${classes.actionButton} ${classes.primaryButton}`}
+                           onClick={() => navigate(`/replay?deviceId=${deviceId}`)}
+                           disabled={disableActions || !position}
+                         >
+                           <ReplayIcon fontSize="small" />
+                         </IconButton>
+                       </Tooltip>
+                     </div>
+                   </div>
+                 </CardContent>
+               )}
             </Card>
           </Rnd>
         )}
       </div>
+      
       {position && (
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
           {!readonly && <MenuItem onClick={handleGeofence}>{t('sharedCreateGeofence')}</MenuItem>}
@@ -408,6 +449,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
           )}
         </Menu>
       )}
+      
       <RemoveDialog
         open={removing}
         endpoint="devices"

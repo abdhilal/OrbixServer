@@ -89,7 +89,11 @@ export const geofenceToFeature = (theme, item) => {
 export const geometryToArea = (geometry) => stringify(reverseCoordinates(geometry));
 
 export const findFonts = (map) => {
-  const { glyphs } = map.getStyle();
+  const mapStyle = map.getStyle();
+  if (!mapStyle || !mapStyle.glyphs) {
+    return ['Open Sans Regular', 'Arial Unicode MS Regular'];
+  }
+  const { glyphs } = mapStyle;
   if (glyphs.startsWith('https://tiles.openfreemap.org')) {
     return ['Noto Sans Regular'];
   }

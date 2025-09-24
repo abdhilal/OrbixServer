@@ -77,11 +77,11 @@ const useStyles = makeStyles()((theme) => ({
   },
   deviceName: {
     fontWeight: 600,
-    fontSize: '0.95rem',
+    fontSize: '0.85rem',
     color: '#FFFFFF',
   },
   deviceStatus: {
-    fontSize: '0.85rem',
+    fontSize: '0.75rem',
     color: '#A9B4C2',
   },
   statusBadge: {
@@ -213,17 +213,7 @@ const DeviceRow = ({ devices, index, style }) => {
                 </IconButton>
               </Tooltip>
             )}
-            {position.attributes.hasOwnProperty('ignition') && (
-              <Tooltip title={`${t('positionIgnition')}: ${formatBoolean(position.attributes.ignition, t)}`}>
-                <IconButton size="small">
-                  {position.attributes.ignition ? (
-                    <EngineIcon width={20} height={20} className={classes.success} />
-                  ) : (
-                    <EngineIcon width={20} height={20} className={classes.neutral} />
-                  )}
-                </IconButton>
-              </Tooltip>
-            )}
+           
             {position.attributes.hasOwnProperty('batteryLevel') && (
               <Tooltip title={`${t('positionBatteryLevel')}: ${formatPercentage(position.attributes.batteryLevel)}`}>
                 <IconButton size="small">

@@ -17,9 +17,9 @@ const MapLiveTracking = () => {
   // دالة لتحديد لون مختلف لكل جهاز
   const getDeviceColor = (deviceId) => {
     const colors = [
+      '#3A86FF', // أزرق Orbix الرسمي
+      '#34D399', // أخضر نجاح
       '#FF5722', // أحمر برتقالي
-      '#2196F3', // أزرق
-      '#4CAF50', // أخضر
       '#FF9800', // برتقالي
       '#9C27B0', // بنفسجي
       '#00BCD4', // سماوي
@@ -163,7 +163,7 @@ const MapLiveTracking = () => {
                 'line-cap': 'round',
               },
               paint: {
-                'line-color': theme.palette.primary.main,
+                'line-color': '#3A86FF',
                 'line-width': 4,
                 'line-opacity': 0.8,
               },
@@ -193,7 +193,7 @@ const MapLiveTracking = () => {
         }
       });
     };
-  }, [trackingDeviceId, trackingDevices, trackingPaths, positions, theme.palette.primary.main]);
+  }, [trackingDeviceId, trackingDevices, trackingPaths, positions]);
 
    // useEffect منفصل لتحديث مسارات التتبع عند تحديث المواقع
    useEffect(() => {

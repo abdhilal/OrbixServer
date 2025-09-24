@@ -17,6 +17,7 @@ const newColors = {
   textSecondary: '#A9B4C2',              // النص الثانوي الرمادي الفاتح
   
   // ألوان الحالات
+  successGreen: '#34D399',               // الأخضر العصري للحالة المتصلة
   errorRed: '#EF4444',                   // الأحمر للأخطاء
   greyDisabled: '#6B7280',               // الرمادي للعناصر المعطلة
   greyLight: '#9CA3AF',                  // الرمادي الفاتح
@@ -105,6 +106,7 @@ export default (server, darkMode) => ({
     borderTransparent30: newColors.borderTransparent30,
     
     // ألوان الحالات
+    successGreen: newColors.successGreen,
     errorRed: newColors.errorRed,
     greyDisabled: newColors.greyDisabled,
     greyLight: newColors.greyLight,

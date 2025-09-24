@@ -299,7 +299,7 @@ export default {
       root: ({ theme }) => ({
         color: theme.palette.text.secondary,
         '&.Mui-selected': {
-          color: theme.palette.primary.main,
+          color: '#3A86FF',
         },
       }),
     },

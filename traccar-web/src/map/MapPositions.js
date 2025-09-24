@@ -38,13 +38,39 @@ const MapPositions = ({ positions, onMapClick, onMarkerClick, showStatus, select
         showDirection = selectedPositionId === position.id && position.course > 0;
         break;
     }
+    
+    // تحديد اللون بناءً على حالة الجهاز والتحديد
+    let deviceColor;
+    if (position.deviceId === selectedDeviceId) {
+      // الجهاز المحدد يظهر باللون الأزرق المميز
+      deviceColor = 'orbix';
+    } else if (showStatus) {
+      // الأجهزة الأخرى تظهر بألوان الحالة
+      const status = device.status;
+      switch (status) {
+        case 'online':
+          deviceColor = 'success';
+          break;
+        case 'offline':
+          deviceColor = 'error';
+          break;
+        case 'unknown':
+          deviceColor = 'warning';
+          break;
+        default:
+          deviceColor = 'neutral';
+      }
+    } else {
+      deviceColor = 'neutral';
+    }
+    
     return {
       id: position.id,
       deviceId: position.deviceId,
       name: device.name,
       fixTime: formatTime(position.fixTime, 'seconds'),
       category: mapIconKey(device.category),
-      color: showStatus ? position.attributes.color || getStatusColor(device.status) : 'neutral',
+      color: deviceColor,
       rotation: position.course,
       direction: showDirection,
     };

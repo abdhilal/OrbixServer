@@ -69,6 +69,11 @@ export const mapImages = {};
 const theme = createTheme({
   palette: {
     neutral: { main: grey[500] },
+    orbix: { main: '#3A86FF' },
+    success: { main: '#34D399' },
+    warning: { main: '#F59E0B' },
+    error: { main: '#EF4444' },
+    info: { main: '#3A86FF' },
   },
 });
 
@@ -78,7 +83,7 @@ export default async () => {
   mapImages.direction = await prepareIcon(await loadImage(directionSvg));
   await Promise.all(Object.keys(mapIcons).map(async (category) => {
     const results = [];
-    ['info', 'success', 'error', 'neutral'].forEach((color) => {
+    ['info', 'success', 'error', 'neutral', 'orbix', 'warning'].forEach((color) => {
       results.push(loadImage(mapIcons[category]).then((icon) => {
         mapImages[`${category}-${color}`] = prepareIcon(background, icon, theme.palette[color].main);
       }));

@@ -18,6 +18,7 @@ import {
   TableFooter,
   Link,
   Tooltip,
+  Button,
 } from '@mui/material';
 import { makeStyles } from 'tss-react/mui';
 import CloseIcon from '@mui/icons-material/Close';
@@ -43,12 +44,17 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   card: {
     pointerEvents: 'auto',
     width: theme.dimensions.popupMaxWidth,
+    borderRadius: '16px',
+    backgroundColor: '#383D4C',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
   },
   media: {
     height: theme.dimensions.popupImageHeight,
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
+    borderRadius: '16px 16px 0 0',
   },
   mediaButton: {
     color: theme.palette.primary.contrastText,
@@ -85,6 +91,60 @@ const useStyles = makeStyles()((theme, { desktopPadding }) => ({
   },
   actions: {
     justifyContent: 'space-between',
+    padding: theme.spacing(1, 2),
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: '0 0 16px 16px',
+  },
+  actionButton: {
+    borderRadius: '50%',
+    width: '40px',
+    height: '40px',
+    padding: theme.spacing(0.5),
+    backgroundColor: 'transparent',
+    color: '#A9B4C2',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      backgroundColor: '#4F566B',
+      color: '#FFFFFF',
+      transform: 'translateY(-1px)',
+    },
+  },
+  primaryButton: {
+    backgroundColor: '#3A86FF',
+    color: '#FFFFFF',
+    '&:hover': {
+      backgroundColor: '#2563EB',
+    },
+  },
+  solidButton: {
+    backgroundColor: '#3A86FF',
+    color: '#FFFFFF',
+    padding: theme.spacing(1, 2),
+    borderRadius: '8px',
+    fontWeight: 500,
+    '&:hover': {
+      backgroundColor: '#2563EB',
+    },
+  },
+  outlineButton: {
+    border: '1px solid #3A86FF',
+    color: '#3A86FF',
+    backgroundColor: 'transparent',
+    padding: theme.spacing(1, 2),
+    borderRadius: '8px',
+    fontWeight: 500,
+    '&:hover': {
+      backgroundColor: 'rgba(58, 134, 255, 0.1)',
+    },
+  },
+  detailsLink: {
+    color: '#3A86FF',
+    textDecoration: 'none',
+    fontWeight: 500,
+    '&:hover': {
+      color: '#2563EB',
+      textDecoration: 'underline',
+    },
   },
   root: {
     pointerEvents: 'none',
@@ -225,13 +285,14 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </CardMedia>
               ) : (
                 <div className={`${classes.header} draggable-header`}>
-                  <Typography variant="body2" color="textSecondary">
-                    {device.name}
+                  <Typography variant="h6" sx={{ color: '#FFFFFF', fontWeight: 600 }}>
+                    تفاصيل الجهاز: <span style={{ fontWeight: 700, color: '#3A86FF' }}>{device.name}</span>
                   </Typography>
                   <IconButton
                     size="small"
                     onClick={onClose}
                     onTouchStart={onClose}
+                    sx={{ color: '#FFFFFF' }}
                   >
                     <CloseIcon fontSize="small" />
                   </IconButton>
@@ -259,9 +320,15 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     <TableFooter>
                       <TableRow>
                         <TableCell colSpan={2} className={classes.cell}>
-                          <Typography variant="body2">
-                            <Link component={RouterLink} to={`/position/${position.id}`}>{t('sharedShowDetails')}</Link>
-                          </Typography>
+                          <Button
+                            component={RouterLink}
+                            to={`/position/${position.id}`}
+                            className={classes.outlineButton}
+                            variant="outlined"
+                            size="small"
+                          >
+                            {t('sharedShowDetails')}
+                          </Button>
                         </TableCell>
                       </TableRow>
                     </TableFooter>
@@ -271,7 +338,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
               <CardActions classes={{ root: classes.actions }} disableSpacing>
                 <Tooltip title={t('sharedExtra')}>
                   <IconButton
-                    color="secondary"
+                    className={classes.actionButton}
                     onClick={(e) => setAnchorEl(e.currentTarget)}
                     disabled={!position}
                   >
@@ -280,7 +347,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={isTracking ? 'إيقاف التتبع' : 'تتبع'}>
                   <IconButton
-                    color={isTracking ? "error" : "primary"}
+                    className={`${classes.actionButton} ${isTracking ? '' : classes.primaryButton}`}
                     onClick={handleTracking}
                     disabled={disableActions || !position}
                   >
@@ -289,6 +356,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('reportReplay')}>
                   <IconButton
+                    className={classes.actionButton}
                     onClick={() => navigate(`/replay?deviceId=${deviceId}`)}
                     disabled={disableActions || !position}
                   >
@@ -297,6 +365,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('commandTitle')}>
                   <IconButton
+                    className={classes.actionButton}
                     onClick={() => navigate(`/settings/device/${deviceId}/command`)}
                     disabled={disableActions}
                   >
@@ -305,6 +374,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('sharedEdit')}>
                   <IconButton
+                    className={classes.actionButton}
                     onClick={() => navigate(`/settings/device/${deviceId}`)}
                     disabled={disableActions || deviceReadonly}
                   >
@@ -313,9 +383,10 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('sharedRemove')}>
                   <IconButton
-                    color="error"
+                    className={classes.actionButton}
                     onClick={() => setRemoving(true)}
                     disabled={disableActions || deviceReadonly}
+                    sx={{ '&:hover': { backgroundColor: 'rgba(239, 68, 68, 0.2)' } }}
                   >
                     <DeleteIcon />
                   </IconButton>

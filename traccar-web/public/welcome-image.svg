@@ -1,0 +1,148 @@
+<svg width="500" height="400" viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with modern gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1f2e;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#2a3441;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e2532;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="planetGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3A86FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E6BCC;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#3A86FF;stop-opacity:0.6" />
+    </linearGradient>
+    
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="500" height="400" fill="url(#bgGradient)"/>
+  
+  <!-- Central tracking system visualization -->
+  <g transform="translate(250, 200)">
+    <!-- Main planet/globe -->
+    <circle cx="0" cy="0" r="50" fill="url(#planetGradient)" filter="url(#glow)"/>
+    
+    <!-- Planet surface details -->
+    <circle cx="-18" cy="-18" r="8" fill="rgba(255,255,255,0.2)"/>
+    <circle cx="15" cy="10" r="5" fill="rgba(255,255,255,0.15)"/>
+    <circle cx="-8" cy="20" r="3" fill="rgba(255,255,255,0.1)"/>
+    
+    <!-- Orbital rings -->
+    <ellipse cx="0" cy="0" rx="75" ry="25" fill="none" stroke="url(#ringGradient)" stroke-width="3" opacity="0.8" transform="rotate(-20)">
+      <animate attributeName="opacity" values="0.8;0.4;0.8" dur="3s" repeatCount="indefinite"/>
+    </ellipse>
+    
+    <ellipse cx="0" cy="0" rx="90" ry="30" fill="none" stroke="#00D4FF" stroke-width="2" opacity="0.5" transform="rotate(15)">
+      <animate attributeName="opacity" values="0.5;0.2;0.5" dur="4s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+  
+  <!-- GPS/Tracking points around the system -->
+  <g opacity="0.9">
+    <!-- Top left tracking point -->
+    <g transform="translate(120, 80)">
+      <circle cx="0" cy="0" r="6" fill="#00FF88" filter="url(#softGlow)"/>
+      <circle cx="0" cy="0" r="12" fill="none" stroke="#00FF88" stroke-width="2" opacity="0.6">
+        <animate attributeName="r" values="12;20;12" dur="2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <!-- Connection line to center -->
+      <line x1="0" y1="0" x2="130" y2="120" stroke="#00FF88" stroke-width="1.5" opacity="0.4" stroke-dasharray="3,3">
+        <animate attributeName="stroke-dashoffset" values="0;6" dur="1.5s" repeatCount="indefinite"/>
+      </line>
+    </g>
+    
+    <!-- Top right tracking point -->
+    <g transform="translate(380, 100)">
+      <circle cx="0" cy="0" r="5" fill="#FF6B6B" filter="url(#softGlow)"/>
+      <circle cx="0" cy="0" r="10" fill="none" stroke="#FF6B6B" stroke-width="2" opacity="0.7">
+        <animate attributeName="r" values="10;18;10" dur="2.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.7;0.1;0.7" dur="2.5s" repeatCount="indefinite"/>
+      </circle>
+      <!-- Connection line to center -->
+      <line x1="0" y1="0" x2="-130" y2="100" stroke="#FF6B6B" stroke-width="1.5" opacity="0.4" stroke-dasharray="4,4">
+        <animate attributeName="stroke-dashoffset" values="0;8" dur="2s" repeatCount="indefinite"/>
+      </line>
+    </g>
+    
+    <!-- Bottom left tracking point -->
+    <g transform="translate(100, 320)">
+      <circle cx="0" cy="0" r="4" fill="#FFD93D" filter="url(#softGlow)"/>
+      <circle cx="0" cy="0" r="8" fill="none" stroke="#FFD93D" stroke-width="2" opacity="0.8">
+        <animate attributeName="r" values="8;15;8" dur="1.8s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1.8s" repeatCount="indefinite"/>
+      </circle>
+      <!-- Connection line to center -->
+      <line x1="0" y1="0" x2="150" y2="-120" stroke="#FFD93D" stroke-width="1.5" opacity="0.4" stroke-dasharray="2,2">
+        <animate attributeName="stroke-dashoffset" values="0;4" dur="1.2s" repeatCount="indefinite"/>
+      </line>
+    </g>
+    
+    <!-- Bottom right tracking point -->
+    <g transform="translate(400, 300)">
+      <circle cx="0" cy="0" r="5" fill="#A855F7" filter="url(#softGlow)"/>
+      <circle cx="0" cy="0" r="10" fill="none" stroke="#A855F7" stroke-width="2" opacity="0.6">
+        <animate attributeName="r" values="10;16;10" dur="2.2s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2.2s" repeatCount="indefinite"/>
+      </circle>
+      <!-- Connection line to center -->
+      <line x1="0" y1="0" x2="-150" y2="-100" stroke="#A855F7" stroke-width="1.5" opacity="0.4" stroke-dasharray="5,3">
+        <animate attributeName="stroke-dashoffset" values="0;8" dur="1.8s" repeatCount="indefinite"/>
+      </line>
+    </g>
+  </g>
+  
+  <!-- Floating data particles -->
+  <g opacity="0.6">
+    <circle cx="180" cy="150" r="2" fill="#3A86FF">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 15,-10; 0,0" dur="4s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.2;0.6" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    
+    <circle cx="320" cy="250" r="1.5" fill="#00D4FF">
+      <animateTransform attributeName="transform" type="translate" values="0,0; -12,8; 0,0" dur="3.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
+    
+    <circle cx="150" cy="280" r="1" fill="#00FF88">
+      <animateTransform attributeName="transform" type="translate" values="0,0; 8,-15; 0,0" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.2;0.6" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    
+    <circle cx="370" cy="180" r="1.5" fill="#FFD93D">
+      <animateTransform attributeName="transform" type="translate" values="0,0; -10,-8; 0,0" dur="4.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0.1;0.6" dur="4.5s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Subtle grid pattern in background -->
+  <g opacity="0.1">
+    <defs>
+      <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#3A86FF" stroke-width="1"/>
+      </pattern>
+    </defs>
+    <rect width="500" height="400" fill="url(#grid)"/>
+  </g>
+</svg>

@@ -6,7 +6,6 @@ import ReactCountryFlag from 'react-country-flag';
 import { makeStyles } from 'tss-react/mui';
 import CloseIcon from '@mui/icons-material/Close';
 import VpnLockIcon from '@mui/icons-material/VpnLock';
-import QrCode2Icon from '@mui/icons-material/QrCode2';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useTheme } from '@mui/material/styles';
@@ -21,17 +20,128 @@ import {
 } from '../common/components/NativeInterface';
 import LogoImage from './LogoImage';
 import { useCatch } from '../reactHelper';
-import QrCodeDialog from '../common/components/QrCodeDialog';
 import fetchOrThrow from '../common/util/fetchOrThrow';
 
 const useStyles = makeStyles()((theme) => ({
   options: {
     position: 'fixed',
-    top: theme.spacing(2),
-    right: theme.spacing(2),
+    top: theme.spacing(3),
+    right: theme.spacing(3),
     display: 'flex',
     flexDirection: 'row',
-    gap: theme.spacing(1),
+    gap: theme.spacing(1.5),
+    zIndex: 1000,
+  },
+  languageSelector: {
+    minWidth: '160px',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: '16px',
+    backdropFilter: 'blur(20px)',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.12)',
+      border: '1px solid rgba(58, 134, 255, 0.3)',
+      boxShadow: '0 12px 40px rgba(58, 134, 255, 0.15)',
+      transform: 'translateY(-2px)',
+    },
+    '& .MuiSelect-select': {
+      padding: '12px 16px',
+      color: '#FFFFFF',
+      fontSize: '0.9rem',
+      fontWeight: '500',
+      fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+    },
+    '& .MuiOutlinedInput-notchedOutline': {
+      border: 'none',
+    },
+    '& .MuiSelect-icon': {
+      color: '#A9B4C2',
+      transition: 'all 0.2s ease',
+    },
+    '&:hover .MuiSelect-icon': {
+      color: '#3A86FF',
+    },
+    '& .MuiSelect-select:focus': {
+      backgroundColor: 'transparent',
+    },
+  },
+  languageMenu: {
+    '& .MuiPaper-root': {
+      backgroundColor: '#2A2F3C',
+      borderRadius: '16px',
+      border: '1px solid rgba(255, 255, 255, 0.12)',
+      boxShadow: '0 20px 60px rgba(0, 0, 0, 0.4)',
+      backdropFilter: 'blur(20px)',
+      marginTop: '8px',
+      minWidth: '200px',
+      maxHeight: '300px',
+      overflow: 'auto',
+      '&::-webkit-scrollbar': {
+        width: '6px',
+      },
+      '&::-webkit-scrollbar-track': {
+        background: 'rgba(255, 255, 255, 0.05)',
+        borderRadius: '3px',
+      },
+      '&::-webkit-scrollbar-thumb': {
+        background: 'rgba(58, 134, 255, 0.3)',
+        borderRadius: '3px',
+        '&:hover': {
+          background: 'rgba(58, 134, 255, 0.5)',
+        },
+      },
+    },
+    '& .MuiMenuItem-root': {
+      padding: '12px 16px',
+      color: '#FFFFFF',
+      fontSize: '0.9rem',
+      fontWeight: '500',
+      fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      transition: 'all 0.2s ease',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '12px',
+      '&:hover': {
+        backgroundColor: 'rgba(58, 134, 255, 0.1)',
+        color: '#3A86FF',
+      },
+      '&.Mui-selected': {
+        backgroundColor: 'rgba(58, 134, 255, 0.15)',
+        color: '#3A86FF',
+        '&:hover': {
+          backgroundColor: 'rgba(58, 134, 255, 0.2)',
+        },
+      },
+    },
+  },
+  flagIcon: {
+    width: '20px',
+    height: '15px',
+    borderRadius: '3px',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.2)',
+    flexShrink: 0,
+  },
+  serverButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: '16px',
+    backdropFilter: 'blur(20px)',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    color: '#A9B4C2',
+    padding: '12px',
+    '&:hover': {
+      backgroundColor: 'rgba(255, 255, 255, 0.12)',
+      border: '1px solid rgba(58, 134, 255, 0.3)',
+      boxShadow: '0 12px 40px rgba(58, 134, 255, 0.15)',
+      transform: 'translateY(-2px)',
+      color: '#3A86FF',
+    },
   },
   container: {
     display: 'flex',
@@ -50,6 +160,111 @@ const useStyles = makeStyles()((theme) => ({
   },
   link: {
     cursor: 'pointer',
+  },
+  eyeIcon: {
+    color: '#A9B4C2',
+    transition: 'all 0.2s ease',
+    padding: '8px',
+    borderRadius: '6px',
+    marginRight: '4px',
+    '&:hover': {
+      color: '#3A86FF',
+      backgroundColor: 'rgba(58, 134, 255, 0.08)',
+      transform: 'scale(1.05)',
+    },
+    '&:active': {
+      transform: 'scale(0.95)',
+    },
+  },
+  eyeIconActive: {
+    color: '#3A86FF',
+    transition: 'all 0.2s ease',
+    padding: '8px',
+    borderRadius: '6px',
+    marginRight: '4px',
+    '&:hover': {
+      color: '#2563EB',
+      backgroundColor: 'rgba(58, 134, 255, 0.08)',
+      transform: 'scale(1.05)',
+    },
+    '&:active': {
+      transform: 'scale(0.95)',
+    },
+  },
+  loginButton: {
+    backgroundColor: '#3A86FF',
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: '1rem',
+    padding: theme.spacing(1.5, 3),
+    borderRadius: '12px',
+    textTransform: 'none',
+    boxShadow: '0 4px 12px rgba(58, 134, 255, 0.3)',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      backgroundColor: '#2563EB',
+      boxShadow: '0 6px 16px rgba(58, 134, 255, 0.4)',
+      transform: 'translateY(-1px)',
+    },
+    '&:active': {
+      transform: 'translateY(0)',
+      boxShadow: '0 2px 8px rgba(58, 134, 255, 0.3)',
+    },
+    '&:disabled': {
+      backgroundColor: '#6B7280',
+      color: '#9CA3AF',
+      boxShadow: 'none',
+      transform: 'none',
+    },
+  },
+  resetLink: {
+    color: '#A9B4C2',
+    textDecoration: 'none',
+    fontSize: '0.875rem',
+    fontWeight: '500',
+    transition: 'color 0.2s ease',
+    '&:hover': {
+      color: '#3A86FF',
+      textDecoration: 'underline',
+    },
+  },
+  textField: {
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+      borderRadius: 12,
+      fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      fontSize: '1rem',
+    },
+    '& .MuiOutlinedInput-root fieldset': {
+      borderColor: 'rgba(169, 180, 194, 0.3)',
+      borderWidth: 1,
+    },
+    '& .MuiOutlinedInput-root:hover fieldset': {
+      borderColor: 'rgba(58, 134, 255, 0.5)',
+    },
+    '& .MuiOutlinedInput-root.Mui-focused fieldset': {
+      borderColor: '#3A86FF',
+      borderWidth: 2,
+    },
+    '& .MuiOutlinedInput-root.Mui-error fieldset': {
+      borderColor: '#EF4444',
+    },
+    '& .MuiInputLabel-root': {
+      color: '#A9B4C2',
+      fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      fontSize: '0.95rem',
+      fontWeight: 500,
+    },
+    '& .MuiInputLabel-root.Mui-focused': {
+      color: '#3A86FF',
+    },
+    '& .MuiInputLabel-root.Mui-error': {
+      color: '#EF4444',
+    },
+    '& .MuiOutlinedInput-input': {
+      color: '#FFFFFF',
+      padding: '14px 16px',
+    },
   },
 }));
 
@@ -70,7 +285,6 @@ const LoginPage = () => {
   const [code, setCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showServerTooltip, setShowServerTooltip] = useState(false);
-  const [showQr, setShowQr] = useState(false);
 
   const registrationEnabled = useSelector((state) => state.session.server.registration);
   const languageEnabled = useSelector((state) => {
@@ -143,7 +357,10 @@ const LoginPage = () => {
     <LoginLayout>
       <div className={classes.options}>
         {nativeEnvironment && changeEnabled && (
-          <IconButton color="primary" onClick={() => navigate('/change-server')}>
+          <IconButton 
+            className={classes.serverButton}
+            onClick={() => navigate('/change-server')}
+          >
             <Tooltip
               title={`${t('settingsServer')}: ${window.location.hostname}`}
               open={showServerTooltip}
@@ -153,19 +370,31 @@ const LoginPage = () => {
             </Tooltip>
           </IconButton>
         )}
-        {!nativeEnvironment && (
-          <IconButton color="primary" onClick={() => setShowQr(true)}>
-            <QrCode2Icon />
-          </IconButton>
-        )}
         {languageEnabled && (
           <FormControl>
-            <Select value={language} onChange={(e) => setLocalLanguage(e.target.value)}>
+            <Select 
+              value={language} 
+              onChange={(e) => setLocalLanguage(e.target.value)}
+              className={classes.languageSelector}
+              MenuProps={{
+                className: classes.languageMenu,
+                anchorOrigin: {
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                },
+                transformOrigin: {
+                  vertical: 'top',
+                  horizontal: 'right',
+                },
+              }}
+            >
               {languageList.map((it) => (
                 <MenuItem key={it.code} value={it.code}>
-                  <Box component="span" sx={{ mr: 1 }}>
-                    <ReactCountryFlag countryCode={it.country} svg />
-                  </Box>
+                  <ReactCountryFlag 
+                    countryCode={it.country} 
+                    svg 
+                    className={classes.flagIcon}
+                  />
                   {it.name}
                 </MenuItem>
               ))}
@@ -187,6 +416,7 @@ const LoginPage = () => {
               autoFocus={!email}
               onChange={(e) => setEmail(e.target.value)}
               helperText={failed && 'Invalid username or password'}
+              className={classes.textField}
             />
             <TextField
               required
@@ -198,6 +428,7 @@ const LoginPage = () => {
               autoComplete="current-password"
               autoFocus={!!email}
               onChange={(e) => setPassword(e.target.value)}
+              className={classes.textField}
               slotProps={{
                 input: {
                   endAdornment: (
@@ -206,6 +437,7 @@ const LoginPage = () => {
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
                         size="small"
+                        className={showPassword ? classes.eyeIconActive : classes.eyeIcon}
                       >
                         {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                       </IconButton>
@@ -223,13 +455,14 @@ const LoginPage = () => {
                 value={code}
                 type="number"
                 onChange={(e) => setCode(e.target.value)}
+                className={classes.textField}
               />
             )}
             <Button
               onClick={handlePasswordLogin}
               type="submit"
               variant="contained"
-              color="secondary"
+              className={classes.loginButton}
               disabled={!email || !password || (codeEnabled && !code)}
             >
               {t('loginLogin')}
@@ -240,7 +473,7 @@ const LoginPage = () => {
           <Button
             onClick={() => handleOpenIdLogin()}
             variant="contained"
-            color="secondary"
+            className={classes.loginButton}
           >
             {t('loginOpenId')}
           </Button>
@@ -250,7 +483,7 @@ const LoginPage = () => {
             {registrationEnabled && (
               <Link
                 onClick={() => navigate('/register')}
-                className={classes.link}
+                className={classes.resetLink}
                 underline="none"
                 variant="caption"
               >
@@ -260,7 +493,7 @@ const LoginPage = () => {
             {emailEnabled && (
               <Link
                 onClick={() => navigate('/reset-password')}
-                className={classes.link}
+                className={classes.resetLink}
                 underline="none"
                 variant="caption"
               >
@@ -270,7 +503,6 @@ const LoginPage = () => {
           </div>
         )}
       </div>
-      <QrCodeDialog open={showQr} onClose={() => setShowQr(false)} />
       <Snackbar
         open={!!announcement && !announcementShown}
         message={announcement}

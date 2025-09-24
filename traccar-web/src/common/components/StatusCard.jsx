@@ -396,12 +396,21 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                        </div>
                        
                        <div className={`${classes.infoItem} ${classes.addressItem}`}>
-                         <Typography variant="body2" className={classes.infoLabel}>
-                           العنوان
-                         </Typography>
-                         <Typography variant="body2" className={`${classes.infoValue} ${classes.addressValue}`}>
-                           <PositionValue position={position} property="address" />
-                         </Typography>
+                         <Button
+                           variant="contained"
+                           color="primary"
+                           size="small"
+                           component={RouterLink}
+                           to={`/position/${position.id}`}
+                           fullWidth
+                           style={{ 
+                             fontSize: '0.75rem',
+                             padding: '4px 8px',
+                             minHeight: '28px'
+                           }}
+                         >
+                           {t('sharedShowDetails')}
+                         </Button>
                        </div>
                      </div>
 

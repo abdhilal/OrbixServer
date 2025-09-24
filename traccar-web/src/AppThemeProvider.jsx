@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { ThemeProvider, useMediaQuery } from '@mui/material';
+import { ThemeProvider, useMediaQuery, GlobalStyles } from '@mui/material';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import { prefixer } from 'stylis';
@@ -31,6 +31,20 @@ const AppThemeProvider = ({ children }) => {
   return (
     <CacheProvider value={cache[direction]}>
       <ThemeProvider theme={themeInstance}>
+        <GlobalStyles
+          styles={{
+            body: {
+              background: themeInstance.palette.custom.backgroundGradient,
+              minHeight: '100vh',
+              margin: 0,
+              padding: 0,
+            },
+            '#root': {
+              minHeight: '100vh',
+              background: 'transparent',
+            },
+          }}
+        />
         {children}
       </ThemeProvider>
     </CacheProvider>

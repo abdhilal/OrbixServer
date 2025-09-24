@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  useMediaQuery, Select, MenuItem, FormControl, Button, TextField, Link, Snackbar, IconButton, Tooltip, Box, InputAdornment,
+  useMediaQuery, Select, MenuItem, FormControl, Button, TextField, Link, Snackbar, IconButton, Tooltip, Box, InputAdornment, Typography,
 } from '@mui/material';
 import ReactCountryFlag from 'react-country-flag';
 import { makeStyles } from 'tss-react/mui';
@@ -27,29 +27,123 @@ import fetchOrThrow from '../common/util/fetchOrThrow';
 const useStyles = makeStyles()((theme) => ({
   options: {
     position: 'fixed',
-    top: theme.spacing(2),
-    right: theme.spacing(2),
+    top: '24px',
+    right: '24px',
     display: 'flex',
     flexDirection: 'row',
-    gap: theme.spacing(1),
+    gap: '12px',
   },
   container: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.spacing(2),
+    gap: '20px',
+    width: '100%',
   },
   extraContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: theme.spacing(4),
-    marginTop: theme.spacing(2),
+    gap: '24px',
+    marginTop: '16px',
   },
   registerButton: {
     minWidth: 'unset',
   },
   link: {
     cursor: 'pointer',
+    color: '#A9B4C2',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    textDecoration: 'none',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      color: '#3A86FF',
+      textDecoration: 'underline',
+    },
+  },
+  loginButton: {
+    height: '48px',
+    fontSize: '1rem',
+    fontWeight: 600,
+    textTransform: 'none',
+    borderRadius: '12px',
+    backgroundColor: '#3A86FF',
+    color: '#FFFFFF',
+    padding: '12px 24px',
+    boxShadow: '0 4px 12px rgba(58, 134, 255, 0.3)',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    '&:hover': {
+      backgroundColor: '#2563EB',
+      boxShadow: '0 6px 16px rgba(58, 134, 255, 0.4)',
+      transform: 'translateY(-1px)',
+    },
+    '&:active': {
+      transform: 'translateY(0)',
+      boxShadow: '0 2px 8px rgba(58, 134, 255, 0.3)',
+    },
+    '&:disabled': {
+      backgroundColor: '#6B7280',
+      color: '#9CA3AF',
+      boxShadow: 'none',
+      transform: 'none',
+    },
+  },
+  textField: {
+    marginBottom: '16px',
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+      borderRadius: '12px',
+      color: '#FFFFFF',
+      padding: '14px 16px',
+      transition: 'all 0.2s ease',
+      '& fieldset': {
+        borderColor: 'rgba(169, 180, 194, 0.3)',
+        borderWidth: '1px',
+      },
+      '&:hover fieldset': {
+        borderColor: 'rgba(58, 134, 255, 0.5)',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#3A86FF',
+        borderWidth: '2px',
+      },
+      '&.Mui-error fieldset': {
+        borderColor: '#EF4444',
+      },
+    },
+    '& .MuiInputLabel-root': {
+      color: '#A9B4C2',
+      fontSize: '1rem',
+      '&.Mui-focused': {
+        color: '#3A86FF',
+      },
+      '&.Mui-error': {
+        color: '#EF4444',
+      },
+    },
+    '& .MuiInputBase-input': {
+      color: '#FFFFFF',
+      fontSize: '1rem',
+    },
+    '& .MuiFormHelperText-root': {
+      color: '#EF4444',
+      fontSize: '0.875rem',
+      marginTop: '8px',
+    },
+  },
+  eyeIcon: {
+    color: '#A9B4C2',
+    padding: '8px',
+    borderRadius: '6px',
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      color: '#3A86FF',
+      backgroundColor: 'rgba(58, 134, 255, 0.1)',
+      transform: 'scale(1.05)',
+    },
+    '&.visible': {
+      color: '#3A86FF',
+    },
   },
 }));
 
@@ -141,42 +235,22 @@ const LoginPage = () => {
 
   return (
     <LoginLayout>
-      <div className={classes.options}>
-        {nativeEnvironment && changeEnabled && (
-          <IconButton color="primary" onClick={() => navigate('/change-server')}>
-            <Tooltip
-              title={`${t('settingsServer')}: ${window.location.hostname}`}
-              open={showServerTooltip}
-              arrow
-            >
-              <VpnLockIcon />
-            </Tooltip>
-          </IconButton>
-        )}
-        {!nativeEnvironment && (
-          <IconButton color="primary" onClick={() => setShowQr(true)}>
-            <QrCode2Icon />
-          </IconButton>
-        )}
-        {languageEnabled && (
-          <FormControl>
-            <Select value={language} onChange={(e) => setLocalLanguage(e.target.value)}>
-              {languageList.map((it) => (
-                <MenuItem key={it.code} value={it.code}>
-                  <Box component="span" sx={{ mr: 1 }}>
-                    <ReactCountryFlag countryCode={it.country} svg />
-                  </Box>
-                  {it.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        )}
-      </div>
+
       <div className={classes.container}>
-        {useMediaQuery(theme.breakpoints.down('lg')) && <LogoImage color={theme.palette.primary.main} />}
-        {!openIdForced && (
-          <>
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              color: '#FFFFFF',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              marginBottom: 3,
+            }}
+          >
+            {t('loginTitle')}
+          </Typography>
+          {!openIdForced && (
+            <>
             <TextField
               required
               error={failed}
@@ -186,7 +260,9 @@ const LoginPage = () => {
               autoComplete="email"
               autoFocus={!email}
               onChange={(e) => setEmail(e.target.value)}
-              helperText={failed && 'Invalid username or password'}
+              helperText={failed && t('loginFailed')}
+              className={classes.textField}
+              fullWidth
             />
             <TextField
               required
@@ -198,6 +274,8 @@ const LoginPage = () => {
               autoComplete="current-password"
               autoFocus={!!email}
               onChange={(e) => setPassword(e.target.value)}
+              className={classes.textField}
+              fullWidth
               slotProps={{
                 input: {
                   endAdornment: (
@@ -206,6 +284,7 @@ const LoginPage = () => {
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
                         size="small"
+                        className={`${classes.eyeIcon} ${showPassword ? 'visible' : ''}`}
                       >
                         {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
                       </IconButton>
@@ -223,14 +302,17 @@ const LoginPage = () => {
                 value={code}
                 type="number"
                 onChange={(e) => setCode(e.target.value)}
+                className={classes.textField}
+                fullWidth
               />
             )}
             <Button
               onClick={handlePasswordLogin}
               type="submit"
               variant="contained"
-              color="secondary"
               disabled={!email || !password || (codeEnabled && !code)}
+              className={classes.loginButton}
+              fullWidth
             >
               {t('loginLogin')}
             </Button>
@@ -270,16 +352,6 @@ const LoginPage = () => {
           </div>
         )}
       </div>
-      <QrCodeDialog open={showQr} onClose={() => setShowQr(false)} />
-      <Snackbar
-        open={!!announcement && !announcementShown}
-        message={announcement}
-        action={(
-          <IconButton size="small" color="inherit" onClick={() => setAnnouncementShown(true)}>
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        )}
-      />
     </LoginLayout>
   );
 };

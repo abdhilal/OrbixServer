@@ -84,25 +84,12 @@ const useStyles = makeStyles()((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundImage: 'url(/logo2.png)',
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-  },
-  welcomeText: {
-    color: '#3A86FF',
-    fontSize: '1.5rem',
-    fontWeight: 600,
-    textAlign: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    padding: '16px',
-    borderRadius: '12px',
-    backdropFilter: 'blur(10px)',
+    overflow: 'hidden',
+    borderRadius: '16px 0 0 16px',
   },
   languageButton: {
-    position: 'absolute',
-    top: '24px',
-    right: '24px',
+    alignSelf: 'flex-end',
+    marginBottom: '24px',
     minWidth: '160px',
     height: '48px',
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
@@ -186,10 +173,21 @@ const LoginLayout = ({ children }) => {
         {/* القسم الأيسر - الصورة */}
         <div className={classes.leftSection}>
           <div className={classes.imageContainer}>
-            <div className={classes.welcomeText}>
-              مرحباً بك
-            </div>
+            <img 
+              src="/image-edit.jpg" 
+              alt="Welcome Image" 
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: '16px 0 0 16px',
+              }}
+            />
           </div>
+        </div>
+        
+        {/* القسم الأيمن - النموذج */}
+        <div className={classes.rightSection}>
           {/* زر اللغة */}
           <IconButton
             className={classes.languageButton}
@@ -225,11 +223,11 @@ const LoginLayout = ({ children }) => {
             }}
             transformOrigin={{
               vertical: 'top',
-              horizontal: 'right',
+              horizontal: 'left',
             }}
             anchorOrigin={{
               vertical: 'bottom',
-              horizontal: 'right',
+              horizontal: 'left',
             }}
           >
             {Object.keys(languages).map((key) => (
@@ -251,10 +249,6 @@ const LoginLayout = ({ children }) => {
               </MenuItem>
             ))}
           </Menu>
-        </div>
-        
-        {/* القسم الأيمن - النموذج */}
-        <div className={classes.rightSection}>
           <form className={classes.form}>
             {children}
           </form>

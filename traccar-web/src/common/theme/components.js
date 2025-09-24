@@ -130,40 +130,54 @@ export default {
   MuiPaper: {
     styleOverrides: {
       root: ({ theme }) => ({
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: '#2A2F3C',
         color: theme.palette.text.primary,
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '12px',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
       }),
     },
   },
   MuiCard: {
     styleOverrides: {
       root: ({ theme }) => ({
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: '#2A2F3C',
         color: theme.palette.text.primary,
-        borderColor: theme.palette.divider,
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '12px',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          transform: 'translateY(-2px)',
+          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
+        },
       }),
     },
   },
   MuiSelect: {
     styleOverrides: {
       root: ({ theme }) => ({
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: '#2A2F3C',
         color: theme.palette.text.primary,
+        borderRadius: '8px',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
       }),
     },
   },
   MuiMenuItem: {
     styleOverrides: {
       root: ({ theme }) => ({
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: '#2A2F3C',
         color: theme.palette.text.primary,
         '&:hover': {
-          backgroundColor: theme.palette.action.hover,
+          backgroundColor: 'rgba(58, 134, 255, 0.1)',
         },
         '&.Mui-selected': {
-          backgroundColor: theme.palette.action.selected,
+          backgroundColor: 'rgba(58, 134, 255, 0.2)',
           '&:hover': {
-            backgroundColor: theme.palette.action.hover,
+            backgroundColor: 'rgba(58, 134, 255, 0.3)',
           },
         },
       }),
@@ -194,16 +208,18 @@ export default {
   MuiAppBar: {
     styleOverrides: {
       root: ({ theme }) => ({
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: '#2A2F3C',
         color: theme.palette.text.primary,
-        borderBottom: `1px solid ${theme.palette.divider}`,
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
       }),
     },
   },
   MuiToolbar: {
     styleOverrides: {
       root: ({ theme }) => ({
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: '#2A2F3C',
         color: theme.palette.text.primary,
       }),
     },
@@ -211,9 +227,10 @@ export default {
   MuiDrawer: {
     styleOverrides: {
       paper: ({ theme }) => ({
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: '#2A2F3C',
         color: theme.palette.text.primary,
-        borderColor: theme.palette.divider,
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(10px)',
       }),
     },
   },
@@ -236,11 +253,13 @@ export default {
   MuiAccordion: {
     styleOverrides: {
       root: ({ theme }) => ({
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: '#2A2F3C',
         color: theme.palette.text.primary,
-        borderColor: theme.palette.divider,
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '8px',
+        marginBottom: '8px',
         '&:before': {
-          backgroundColor: theme.palette.divider,
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
         },
       }),
     },
@@ -248,25 +267,30 @@ export default {
   MuiAccordionSummary: {
     styleOverrides: {
       root: ({ theme }) => ({
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: '#2A2F3C',
         color: theme.palette.text.primary,
-        borderColor: theme.palette.divider,
+        borderRadius: '8px 8px 0 0',
+        '&:hover': {
+          backgroundColor: 'rgba(58, 134, 255, 0.05)',
+        },
       }),
     },
   },
   MuiAccordionDetails: {
     styleOverrides: {
       root: ({ theme }) => ({
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: '#2A2F3C',
         color: theme.palette.text.primary,
+        borderRadius: '0 0 8px 8px',
       }),
     },
   },
   MuiBottomNavigation: {
     styleOverrides: {
       root: ({ theme }) => ({
-        backgroundColor: theme.palette.background.paper,
-        borderTop: `1px solid ${theme.palette.divider}`,
+        backgroundColor: '#2A2F3C',
+        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(10px)',
       }),
     },
   },

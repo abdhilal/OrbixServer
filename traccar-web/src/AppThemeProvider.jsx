@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { ThemeProvider, useMediaQuery } from '@mui/material';
+import { ThemeProvider, useMediaQuery, GlobalStyles } from '@mui/material';
 import { CacheProvider } from '@emotion/react';
 import createCache from '@emotion/cache';
 import { prefixer } from 'stylis';
@@ -31,6 +31,40 @@ const AppThemeProvider = ({ children }) => {
   return (
     <CacheProvider value={cache[direction]}>
       <ThemeProvider theme={themeInstance}>
+        <GlobalStyles
+          styles={{
+            body: {
+              background: 'linear-gradient(135deg, #1a1f2e 100%, #2A2F3C 100%)',
+              minHeight: '100vh',
+              margin: 0,
+              padding: 0,
+            },
+            '#root': {
+              minHeight: '100vh',
+              background: 'transparent',
+            },
+            // Custom scrollbar styles
+            '*::-webkit-scrollbar': {
+              width: '8px',
+              height: '8px',
+            },
+            '*::-webkit-scrollbar-track': {
+              background: 'rgba(42, 47, 60, 0.3)',
+              borderRadius: '4px',
+            },
+            '*::-webkit-scrollbar-thumb': {
+              background: 'linear-gradient(135deg, #667eea, #764ba2)',
+              borderRadius: '4px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+            },
+            '*::-webkit-scrollbar-thumb:hover': {
+              background: 'linear-gradient(135deg, #764ba2, #667eea)',
+            },
+            '*::-webkit-scrollbar-corner': {
+              background: 'rgba(42, 47, 60, 0.3)',
+            },
+          }}
+        />
         {children}
       </ThemeProvider>
     </CacheProvider>

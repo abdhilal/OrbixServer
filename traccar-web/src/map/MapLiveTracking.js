@@ -17,9 +17,9 @@ const MapLiveTracking = () => {
   // دالة لتحديد لون مختلف لكل جهاز
   const getDeviceColor = (deviceId) => {
     const colors = [
+      '#3A86FF', // أزرق Orbix الرسمي
+      '#34D399', // أخضر نجاح
       '#FF5722', // أحمر برتقالي
-      '#2196F3', // أزرق
-      '#4CAF50', // أخضر
       '#FF9800', // برتقالي
       '#9C27B0', // بنفسجي
       '#00BCD4', // سماوي
@@ -50,8 +50,11 @@ const MapLiveTracking = () => {
   useEffect(() => {
     if (!map) return;
 
+    const mapStyle = map.getStyle();
+    if (!mapStyle) return; // التحقق من وجود النمط قبل الوصول إليه
+
     // إزالة جميع المسارات القديمة
-    const existingLayers = map.getStyle().layers.filter(layer => 
+    const existingLayers = mapStyle.layers.filter(layer => 
       layer.id.startsWith('tracking-route-')
     );
     existingLayers.forEach(layer => {
@@ -60,7 +63,7 @@ const MapLiveTracking = () => {
       }
     });
 
-    const existingSources = Object.keys(map.getStyle().sources).filter(source => 
+    const existingSources = Object.keys(mapStyle.sources).filter(source => 
       source.startsWith('tracking-route-')
     );
     existingSources.forEach(source => {
@@ -163,7 +166,7 @@ const MapLiveTracking = () => {
                 'line-cap': 'round',
               },
               paint: {
-                'line-color': theme.palette.primary.main,
+                'line-color': '#3A86FF',
                 'line-width': 4,
                 'line-opacity': 0.8,
               },
@@ -175,7 +178,10 @@ const MapLiveTracking = () => {
 
     // تنظيف عند إلغاء التتبع
     return () => {
-      const layersToRemove = map.getStyle().layers.filter(layer => 
+      const mapStyle = map.getStyle();
+      if (!mapStyle) return; // التحقق من وجود النمط قبل الوصول إليه
+      
+      const layersToRemove = mapStyle.layers.filter(layer => 
         layer.id.startsWith('tracking-route-')
       );
       layersToRemove.forEach(layer => {
@@ -184,7 +190,7 @@ const MapLiveTracking = () => {
         }
       });
 
-      const sourcesToRemove = Object.keys(map.getStyle().sources).filter(source => 
+      const sourcesToRemove = Object.keys(mapStyle.sources).filter(source => 
         source.startsWith('tracking-route-')
       );
       sourcesToRemove.forEach(source => {
@@ -193,7 +199,7 @@ const MapLiveTracking = () => {
         }
       });
     };
-  }, [trackingDeviceId, trackingDevices, trackingPaths, positions, theme.palette.primary.main]);
+  }, [trackingDeviceId, trackingDevices, trackingPaths, positions]);
 
    // useEffect منفصل لتحديث مسارات التتبع عند تحديث المواقع
    useEffect(() => {

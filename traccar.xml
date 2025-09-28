@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM 'http://java.sun.com/dtd/properties.dtd'>
+<properties>
+
+    <entry key='web.path'>./traccar-web/simple</entry>
+    <entry key='web.localizationPath'>./traccar-web/src/resources/l10n</entry>
+
+    <entry key='geocoder.type'>pluscodes</entry>
+
+    <entry key='media.path'>/opt/traccar/media</entry>
+
+
+    <entry key='logger.queries'>false</entry>
+    <entry key='logger.fullStackTraces'>true</entry>
+
+
+ <entry key='database.driver'>com.mysql.cj.jdbc.Driver</entry>
+<entry key='database.url'>jdbc:mysql://localhost/traccar?zeroDateTimeBehavior=convertToNull&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true&amp;useSSL=false</entry>
+<entry key='database.user'>traccar</entry>
+<entry key='database.password'>Abd990</entry>
+
+
+<entry key='web.port'>8082</entry>
+<entry key='web.webSocket'>true</entry>
+<entry key='api.enable'>true</entry>
+
+
+
+    <!--<entry key='server.instantAcknowledgement'>true</entry>
+    <entry key='server.buffering.threshold'>5000</entry>-->
+
+    <entry key='atrack.custom'>true</entry>
+    <entry key='intellitrac.port'>6037</entry>
+
+</properties>

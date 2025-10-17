@@ -65,6 +65,8 @@ tags:
     description: Drivers management
   - name: Maintenance
     description: Maintenance management
+  - name: Ads
+    description: Ads management
   - name: Calendars
     description: Calendar management
   - name: Statistics
@@ -1736,6 +1738,131 @@ paths:
         '204':
           description: No Content
           content: {}
+  /ads:
+    get:
+      summary: Fetch a list of Ads
+      description: Without params, it returns a list of Ads the user has access to
+      tags:
+        - Ads
+      parameters:
+        - name: all
+          in: query
+          description: Can only be used by admins or managers to fetch all entities
+          schema:
+            type: boolean
+        - name: userId
+          in: query
+          description: Standard users can use this only with their own _userId_
+          schema:
+            type: integer
+        - name: refresh
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ad'
+    post:
+      summary: Create an Ad
+      tags:
+        - Ads
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ad'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ad'
+      x-codegen-request-body-name: body
+  /ads/{id}:
+    put:
+      summary: Update an Ad
+      tags:
+        - Ads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Ad'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ad'
+      x-codegen-request-body-name: body
+    delete:
+      summary: Delete an Ad
+      tags:
+        - Ads
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+          content: {}
+
+  /ads/public:
+    get:
+      summary: Fetch a public list of Ads
+      description: Returns active Ads filtered by position, type, status; excludes expired by `endDate`
+      tags:
+        - Ads
+      security: []
+      parameters:
+        - name: position
+          in: query
+          schema:
+            type: string
+        - name: type
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: refresh
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Ad'
 components:
   schemas:
     Position:
@@ -2272,6 +2399,55 @@ components:
         attributes:
           type: object
           properties: {}
+    Ad:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        description:
+          type: string
+        image:
+          type: string
+        link:
+          type: string
+        position:
+          type: string
+        startDate:
+          type: string
+          description: in ISO 8601 format. eg. `1963-11-22T18:30:00Z`
+          format: date-time
+        endDate:
+          type: string
+          description: in ISO 8601 format. eg. `1963-11-22T18:30:00Z`
+          format: date-time
+        isActive:
+          type: boolean
+        views:
+          type: integer
+        clicks:
+          type: integer
+        userId:
+          type: integer
+          format: int64
+        createdAt:
+          type: string
+          description: in ISO 8601 format. eg. `1963-11-22T18:30:00Z`
+          format: date-time
+        updatedAt:
+          type: string
+          description: in ISO 8601 format. eg. `1963-11-22T18:30:00Z`
+          format: date-time
+        price:
+          type: number
+        status:
+          type: string
+        targetAudience:
+          type: string
+        type:
+          type: string
   parameters:
     entityId:
       name: id

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+  <changeSet author="author" id="changelog-6.10.0-ads">
+
+    <createTable tableName="tc_ads">
+      <column name="id" type="INT" autoIncrement="true">
+        <constraints primaryKey="true" />
+      </column>
+      <column name="title" type="VARCHAR(255)">
+        <constraints nullable="false" />
+      </column>
+      <column name="description" type="VARCHAR(4000)" />
+      <column name="image" type="VARCHAR(512)" />
+      <column name="link" type="VARCHAR(512)" />
+      <column name="position" type="VARCHAR(64)" />
+      <column name="startdate" type="TIMESTAMP" />
+      <column name="enddate" type="TIMESTAMP" />
+      <column name="isactive" type="BOOLEAN" defaultValueBoolean="true">
+        <constraints nullable="false" />
+      </column>
+      <column name="views" type="INT" defaultValueNumeric="0">
+        <constraints nullable="false" />
+      </column>
+      <column name="clicks" type="INT" defaultValueNumeric="0">
+        <constraints nullable="false" />
+      </column>
+      <column name="userid" type="INT" />
+      <column name="createdat" type="TIMESTAMP" />
+      <column name="updatedat" type="TIMESTAMP" />
+      <column name="price" type="DECIMAL(10,2)" />
+      <column name="status" type="VARCHAR(32)" defaultValue="pending" />
+      <column name="targetaudience" type="VARCHAR(128)" />
+      <column name="type" type="VARCHAR(32)" defaultValue="image" />
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="tc_ads" baseColumnNames="userid" constraintName="fk_ads_userid" onDelete="SET NULL" referencedColumnNames="id" referencedTableName="tc_users" />
+
+  </changeSet>
+
+</databaseChangeLog>

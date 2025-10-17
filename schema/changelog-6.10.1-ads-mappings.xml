@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+  <changeSet author="author" id="changelog-6.10.1-ads-mappings">
+
+    <!-- User ↔ Ad mapping -->
+    <createTable tableName="tc_user_ad">
+      <column name="userid" type="INT">
+        <constraints nullable="false" />
+      </column>
+      <column name="adid" type="INT">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="tc_user_ad" baseColumnNames="userid" constraintName="fk_user_ad_userid" referencedTableName="tc_users" referencedColumnNames="id" onDelete="CASCADE" />
+    <addForeignKeyConstraint baseTableName="tc_user_ad" baseColumnNames="adid" constraintName="fk_user_ad_adid" referencedTableName="tc_ads" referencedColumnNames="id" onDelete="CASCADE" />
+
+    <!-- Group ↔ Ad mapping -->
+    <createTable tableName="tc_group_ad">
+      <column name="groupid" type="INT">
+        <constraints nullable="false" />
+      </column>
+      <column name="adid" type="INT">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="tc_group_ad" baseColumnNames="groupid" constraintName="fk_group_ad_groupid" referencedTableName="tc_groups" referencedColumnNames="id" onDelete="CASCADE" />
+    <addForeignKeyConstraint baseTableName="tc_group_ad" baseColumnNames="adid" constraintName="fk_group_ad_adid" referencedTableName="tc_ads" referencedColumnNames="id" onDelete="CASCADE" />
+
+    <!-- Device ↔ Ad mapping -->
+    <createTable tableName="tc_device_ad">
+      <column name="deviceid" type="INT">
+        <constraints nullable="false" />
+      </column>
+      <column name="adid" type="INT">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName="tc_device_ad" baseColumnNames="deviceid" constraintName="fk_device_ad_deviceid" referencedTableName="tc_devices" referencedColumnNames="id" onDelete="CASCADE" />
+    <addForeignKeyConstraint baseTableName="tc_device_ad" baseColumnNames="adid" constraintName="fk_device_ad_adid" referencedTableName="tc_ads" referencedColumnNames="id" onDelete="CASCADE" />
+
+  </changeSet>
+
+</databaseChangeLog>

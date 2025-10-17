@@ -34,5 +34,7 @@
   <include file="changelog-6.7.0.xml" relativeToChangelogFile="true" />
   <include file="changelog-6.8.0.xml" relativeToChangelogFile="true" />
   <include file="changelog-6.9.0.xml" relativeToChangelogFile="true" />
+  <include file="changelog-6.10.0-ads.xml" relativeToChangelogFile="true" />
+  <include file="changelog-6.10.1-ads-mappings.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>
